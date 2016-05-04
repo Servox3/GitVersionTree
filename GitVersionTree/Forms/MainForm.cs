@@ -14,6 +14,8 @@ namespace GitVersionTree
 {
     public partial class MainForm : Form
     {
+        private readonly string dateSince = "2016-04-20 00:00:00";
+
         private Dictionary<string, string> DecorateDictionary = new Dictionary<string, string>();
         private List<List<string>> Nodes = new List<List<string>>();
         
@@ -168,7 +170,9 @@ namespace GitVersionTree
             string[] MergedParents;
 
             Status("Getting git commit(s) ...");
-            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --all --pretty=format:\"%h|%p|%d\"");
+            //Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --all --pretty=format:\"%h|%p|%d\"");
+            //Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --all -n 20 --pretty=format:\"%h|%p|%d\"");
+            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --all --since \""+dateSince+"\" --pretty=format:\"%h|%p|%d\"");
             if (String.IsNullOrEmpty(Result))
             {
                 Status("Unable to get get branch or branch empty ...");
@@ -208,7 +212,7 @@ namespace GitVersionTree
                         if (!RefColumns[1].ToLower().StartsWith("refs/tags"))
                         if (RefColumns[1].ToLower().Contains("master"))
                         {
-                            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --reverse --first-parent --pretty=format:\"%h\" " + RefColumns[0]);
+                            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --reverse --first-parent --since \"" + dateSince + "\" --pretty=format:\"%h\" " + RefColumns[0]);
                             if (String.IsNullOrEmpty(Result))
                             {
                                 Status("Unable to get commit(s) ...");
@@ -233,7 +237,7 @@ namespace GitVersionTree
                         if (!RefColumns[1].ToLower().StartsWith("refs/tags"))
                         if (!RefColumns[1].ToLower().Contains("master"))
                         {
-                            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --reverse --first-parent --pretty=format:\"%h\" " + RefColumns[0]);
+                            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --reverse --first-parent --since \"" + dateSince + "\" --pretty=format:\"%h\" " + RefColumns[0]);
                             if (String.IsNullOrEmpty(Result))
                             {
                                 Status("Unable to get commit(s) ...");
@@ -253,7 +257,7 @@ namespace GitVersionTree
             }
 
             Status("Getting git merged branch(es) ...");
-            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --all --merges --pretty=format:\"%h|%p\"");
+            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --all --merges --since \"" + dateSince + "\" --pretty=format:\"%h|%p\"");
             if (String.IsNullOrEmpty(Result))
             {
                 Status("Unable to get get branch or branch empty ...");
@@ -271,7 +275,7 @@ namespace GitVersionTree
                     {
                         for (int i = 1; i < MergedParents.Length; i++)
                         {
-                            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --reverse --first-parent --pretty=format:\"%h\" " + MergedParents[i]);
+                            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --reverse --first-parent --since \"" + dateSince + "\" --pretty=format:\"%h\" " + MergedParents[i]);
                             if (String.IsNullOrEmpty(Result))
                             {
                                 Status("Unable to get commit(s) ...");
