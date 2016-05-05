@@ -147,14 +147,40 @@ namespace GitVersionTree
                 //}
                 //result.Add(resultNodeList);
             }
+
+            // Check each node, if it should be in the graph
             foreach (var nodeList in nodes)
             {
                 var reducedList = new List<string>();
                 foreach (var node in nodeList)
                 {
+                    if (reducedList.Contains(node))
+                    {
+                        continue;
+                    }
                     if (parents[node].Count > 1)
                     {
+                        if (node != nodeList[0])
+                        {
+                            var parentInThisList = nodeList[nodeList.IndexOf(node) - 1];
+                            if (!reducedList.Contains(parentInThisList))
+                            {
+                                reducedList.Add(parentInThisList);
+                            }
+                        }
                         reducedList.Add(node);
+                    }
+                    else if (children[node].Count > 1)
+                    {
+                        reducedList.Add(node);
+                        if (node != nodeList[nodeList.Count - 1])
+                        {
+                            var childInThisList = nodeList[nodeList.IndexOf(node) + 1];
+                            if (!reducedList.Contains(childInThisList))
+                            {
+                                reducedList.Add(childInThisList);
+                            }
+                        }
                     }
                     else if (decorateDictionary.ContainsKey(node))
                     {
