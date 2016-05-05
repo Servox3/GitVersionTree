@@ -186,7 +186,7 @@ namespace GitVersionTree
                     {
                         reducedList.Add(node);
                     }
-                    else if (children[node].Count > 1)
+                    else if (parents[node].Count == 0)
                     {
                         reducedList.Add(node);
                     }
