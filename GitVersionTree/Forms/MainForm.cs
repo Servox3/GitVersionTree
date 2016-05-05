@@ -31,6 +31,7 @@ namespace GitVersionTree
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            GenerateButton.Select();
             Text = Application.ProductName + " - v" + Application.ProductVersion.Substring(0, 3);
 
             RefreshPath();
@@ -300,6 +301,8 @@ namespace GitVersionTree
 
             Status("Processed " + Nodes.Count + " branch(es) ...");
 
+            Nodes = new Reducer().ReduceNodes(Nodes, DecorateDictionary);
+
             StringBuilder DotStringBuilder = new StringBuilder();
             Status("Generating dot file ...");
             DotStringBuilder.Append("strict digraph \"" + RepositoryName + "\" {\r\n");
@@ -380,6 +383,7 @@ namespace GitVersionTree
             }
 
             Status("Done! ...");
+            ExitButton.Select();
         }
     }
 }
