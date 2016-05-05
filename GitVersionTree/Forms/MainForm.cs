@@ -225,73 +225,35 @@ namespace GitVersionTree
                 File.AppendAllText(LogFilename, "[ref branch(es)]\r\n");
                 File.AppendAllText(LogFilename, Result + "\r\n");
                 string[] RefLines = Result.Split('\n');
-                foreach (string RefLine in RefLines)
-                {
-                    if (!String.IsNullOrEmpty(RefLine))
-                    {
-                        string[] RefColumns = RefLine.Split('|');
 
-                        // Treat the master branches (local and origin
-                        if (!RefColumns[1].ToLower().StartsWith("refs/tags"))
-                            if (RefColumns[1].ToLower().Contains("master"))
-                            {
-                                //By using first-parent we get only the presumed master commits
-                                Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --reverse --first-parent --since \"" + dateSince + "\" --pretty=format:\"%h\" " + RefColumns[0]);
-                                //Result now has all the first-parents of the master head
-                                if (String.IsNullOrEmpty(Result))
-                                {
-                                    Status("Unable to get commit(s) ...");
-                                }
-                                else
-                                {
-                                    //Add the master branch commits to the graph
-                                    string[] HashLines = Result.Split('\n');
-                                    Nodes.Add(new List<string>());
-                                    //if (HashLines.Any())
-                                    //{
-                                    //    Nodes[Nodes.Count - 1].Add(HashLines.First());
-                                    //    Nodes[Nodes.Count - 1].Add(HashLines.Last());
-                                    //}
-                                    foreach (string HashLine in HashLines)
-                                    {
-                                        Nodes[Nodes.Count - 1].Add(HashLine);
-                                    }
-                                }
-                            }
-                    }
-                }
+                // Collect all first-parent nodes of each branch separately
                 foreach (string RefLine in RefLines)
                 {
                     if (!String.IsNullOrEmpty(RefLine))
                     {
                         string[] RefColumns = RefLine.Split('|');
                         if (!RefColumns[1].ToLower().StartsWith("refs/tags"))
-                            if (!RefColumns[1].ToLower().Contains("master"))
+                            Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --reverse --first-parent --since \"" + dateSince + "\" --pretty=format:\"%h\" " + RefColumns[0]);
+                        //Result now has all the first-parents of the branch
+                        if (String.IsNullOrEmpty(Result))
+                        {
+                            Status("Unable to get commit(s) ...");
+                        }
+                        else
+                        {
+                            //Add the branch commits to the graph
+                            string[] HashLines = Result.Split('\n');
+                            Nodes.Add(new List<string>());
+                            foreach (string HashLine in HashLines)
                             {
-                                Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --reverse --first-parent --since \"" + dateSince + "\" --pretty=format:\"%h\" " + RefColumns[0]);
-                                if (String.IsNullOrEmpty(Result))
-                                {
-                                    Status("Unable to get commit(s) ...");
-                                }
-                                else
-                                {
-                                    string[] HashLines = Result.Split('\n');
-                                    Nodes.Add(new List<string>());
-                                    //if (HashLines.Any())
-                                    //{
-                                    //    Nodes[Nodes.Count - 1].Add(HashLines.First());
-                                    //    Nodes[Nodes.Count - 1].Add(HashLines.Last());
-                                    //}
-                                    foreach (string HashLine in HashLines)
-                                    {
-                                        Nodes[Nodes.Count - 1].Add(HashLine);
-                                    }
-                                }
+                                Nodes[Nodes.Count - 1].Add(HashLine);
                             }
+                        }
                     }
                 }
             }
 
+            //Treat all merges
             Status("Getting git merged branch(es) ...");
             Result = Execute(Reg.Read("GitPath"), "--git-dir \"" + Reg.Read("GitRepositoryPath") + "\\.git\" log --all --merges --since \"" + dateSince + "\" --pretty=format:\"%h|%p\"");
             if (String.IsNullOrEmpty(Result))
@@ -352,16 +314,9 @@ namespace GitVersionTree
                     if (j < Nodes[i].Count - 1)
                     {
                         DotStringBuilder.Append(" -> ");
-                        ////if (j == 0 || j == Nodes[i].Count - 2)
-                        //if (j == 0)
-                        //{
-                        //    DotStringBuilder.Append("\"" + Nodes[i][j] + "\"");
-                        //    DotStringBuilder.Append(" -> ");
-                        //}
                     }
                     else
                     {
-                        //DotStringBuilder.Append("\"" + Nodes[i][j] + "\"");
                         DotStringBuilder.Append(";");
                     }
                 }
