@@ -59,9 +59,9 @@ namespace GitVersionTree
                     {
                         continue;
                     }
-                    if (parents[node].Count > 1)
+                    if (!strong)
                     {
-                        if (!strong)
+                        if (parents[node].Count > 1)
                         {
                             if (node != nodeList[0])
                             {
