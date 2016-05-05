@@ -283,11 +283,6 @@ namespace GitVersionTree
                             {
                                 string[] HashLines = Result.Split('\n');
                                 Nodes.Add(new List<string>());
-                                //if (HashLines.Any())
-                                //{
-                                //    Nodes[Nodes.Count - 1].Add(HashLines.First());
-                                //    Nodes[Nodes.Count - 1].Add(HashLines.Last());
-                                //}
                                 foreach (string HashLine in HashLines)
                                 {
                                     Nodes[Nodes.Count - 1].Add(HashLine);
@@ -306,7 +301,6 @@ namespace GitVersionTree
             StringBuilder DotStringBuilder = new StringBuilder();
             Status("Generating dot file ...");
             DotStringBuilder.Append("strict digraph \"" + RepositoryName + "\" {\r\n");
-            //DotStringBuilder.Append("  splines=line;\r\n");
             for (int i = 0; i < Nodes.Count; i++)
             {
                 for (int j = 0; j < Nodes[i].Count; j++)
@@ -316,14 +310,11 @@ namespace GitVersionTree
             }
             for (int i = 0; i < Nodes.Count; i++)
             {
-                //DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\"];\r\n");
-                DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\"]\r\n");
-                //DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\" label=\"Doh! " + (i + 1) + "\"];\r\n");
+                DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\"];\r\n");
                 DotStringBuilder.Append("  ");
                 for (int j = 0; j < Nodes[i].Count; j++)
                 {
                     //DotStringBuilder.Append("\"" + Nodes[i][j] + "\"");
-                    //DotStringBuilder.Append(Nodes[i][j]);
                     DotStringBuilder.Append("n" + Nodes[i][j] );
                     if (j < Nodes[i].Count - 1)
                     {
