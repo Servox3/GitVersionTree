@@ -309,11 +309,14 @@ namespace GitVersionTree
             //DotStringBuilder.Append("  splines=line;\r\n");
             for (int i = 0; i < Nodes.Count; i++)
             {
-                DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\"];\r\n");
+                //DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\"];\r\n");
+                DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\"]\r\n");
+                //DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\" label=\"Doh! " + (i + 1) + "\"];\r\n");
                 DotStringBuilder.Append("  ");
                 for (int j = 0; j < Nodes[i].Count; j++)
                 {
                     DotStringBuilder.Append("\"" + Nodes[i][j] + "\"");
+                    //DotStringBuilder.Append(Nodes[i][j] + "[label=\"" + Nodes[i][j] + "\"]");
                     if (j < Nodes[i].Count - 1)
                     {
                         DotStringBuilder.Append(" -> ");
