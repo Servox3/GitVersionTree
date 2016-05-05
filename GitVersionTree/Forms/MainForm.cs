@@ -309,11 +309,22 @@ namespace GitVersionTree
             //DotStringBuilder.Append("  splines=line;\r\n");
             for (int i = 0; i < Nodes.Count; i++)
             {
-                DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\"];\r\n");
+                for (int j = 0; j < Nodes[i].Count; j++)
+                {
+                    DotStringBuilder.Append("  n" + Nodes[i][j] + " [label=\"" + Nodes[i][j] + "\"]\r\n");
+                }
+            }
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                //DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\"];\r\n");
+                DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\"]\r\n");
+                //DotStringBuilder.Append("  node[group=\"" + (i + 1) + "\" label=\"Doh! " + (i + 1) + "\"];\r\n");
                 DotStringBuilder.Append("  ");
                 for (int j = 0; j < Nodes[i].Count; j++)
                 {
-                    DotStringBuilder.Append("\"" + Nodes[i][j] + "\"");
+                    //DotStringBuilder.Append("\"" + Nodes[i][j] + "\"");
+                    //DotStringBuilder.Append(Nodes[i][j]);
+                    DotStringBuilder.Append("n" + Nodes[i][j] );
                     if (j < Nodes[i].Count - 1)
                     {
                         DotStringBuilder.Append(" -> ");
@@ -341,7 +352,7 @@ namespace GitVersionTree
                 {
                     DotStringBuilder.Append("    \"" + DecorateKeyValuePair.Value.Trim() + "\" [shape=\"box\", style=\"filled\", fillcolor=\"#ddddff\"];\r\n");
                 }
-                DotStringBuilder.Append("    \"" + DecorateKeyValuePair.Value.Trim() + "\" -> \"" + DecorateKeyValuePair.Key + "\" [weight=0, arrowtype=\"none\", dirtype=\"none\", arrowhead=\"none\", style=\"dotted\"];\r\n");
+                DotStringBuilder.Append("    \"" + DecorateKeyValuePair.Value.Trim() + "\" -> \"n" + DecorateKeyValuePair.Key + "\" [weight=0, arrowtype=\"none\", dirtype=\"none\", arrowhead=\"none\", style=\"dotted\"];\r\n");
                 DotStringBuilder.Append("  }\r\n");
             }
 
