@@ -5,14 +5,12 @@ namespace GitVersionTree
 {
     public class Reducer
     {
+        Dictionary<string, List<string>> parents = new Dictionary<string, List<string>>();
+        Dictionary<string, List<string>> children = new Dictionary<string, List<string>>();
         public List<List<string>> ReduceNodes(List<List<string>> nodes, Dictionary<string, string> decorateDictionary)
         {
-            var parents = new Dictionary<string, List<string>>();
-            var children = new Dictionary<string, List<string>>();
-            var result = new List<List<string>>();
             foreach (var nodeList in nodes)
             {
-                var resultNodeList = new List<string>();
                 foreach (var node in nodeList)
                 {
                     if (!parents.ContainsKey(node))
@@ -45,7 +43,12 @@ namespace GitVersionTree
                     }
                 }
             }
+            return FilterNodes(nodes, decorateDictionary, true);
+        }
 
+        private List<List<string>> FilterNodes(List<List<string>> nodes, Dictionary<string, string> decorateDictionary, bool strong)
+        {
+            List<List<string>> result = new List<List<string>>();
             // Check each node, if it should be in the graph
             foreach (var nodeList in nodes)
             {
@@ -58,12 +61,15 @@ namespace GitVersionTree
                     }
                     if (parents[node].Count > 1)
                     {
-                        if (node != nodeList[0])
+                        if (!strong)
                         {
-                            var parentInThisList = nodeList[nodeList.IndexOf(node) - 1];
-                            if (!reducedList.Contains(parentInThisList))
+                            if (node != nodeList[0])
                             {
-                                reducedList.Add(parentInThisList);
+                                var parentInThisList = nodeList[nodeList.IndexOf(node) - 1];
+                                if (!reducedList.Contains(parentInThisList))
+                                {
+                                    reducedList.Add(parentInThisList);
+                                }
                             }
                         }
                         reducedList.Add(node);
@@ -71,12 +77,15 @@ namespace GitVersionTree
                     else if (children[node].Count > 1)
                     {
                         reducedList.Add(node);
-                        if (node != nodeList[nodeList.Count - 1])
+                        if (!strong)
                         {
-                            var childInThisList = nodeList[nodeList.IndexOf(node) + 1];
-                            if (!reducedList.Contains(childInThisList))
+                            if (node != nodeList[nodeList.Count - 1])
                             {
-                                reducedList.Add(childInThisList);
+                                var childInThisList = nodeList[nodeList.IndexOf(node) + 1];
+                                if (!reducedList.Contains(childInThisList))
+                                {
+                                    reducedList.Add(childInThisList);
+                                }
                             }
                         }
                     }
