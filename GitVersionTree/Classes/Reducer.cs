@@ -7,6 +7,7 @@ namespace GitVersionTree
     {
         Dictionary<string, List<string>> parents = new Dictionary<string, List<string>>();
         Dictionary<string, List<string>> children = new Dictionary<string, List<string>>();
+
         public List<List<string>> ReduceNodes(List<List<string>> nodes, Dictionary<string, string> decorateDictionary)
         {
             foreach (var nodeList in nodes)
@@ -46,6 +47,13 @@ namespace GitVersionTree
             return FilterNodes(nodes, decorateDictionary, true);
         }
 
+        /// <summary>
+        /// Removes nodes that have only one parent and one child
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <param name="decorateDictionary"></param>
+        /// <param name="strong">Set to true to remove more nodes</param>
+        /// <returns></returns>
         private List<List<string>> FilterNodes(List<List<string>> nodes, Dictionary<string, string> decorateDictionary, bool strong)
         {
             List<List<string>> result = new List<List<string>>();

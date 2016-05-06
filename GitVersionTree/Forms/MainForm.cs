@@ -14,7 +14,8 @@ namespace GitVersionTree
 {
     public partial class MainForm : Form
     {
-        private readonly string dateSince = "2016-04-20 00:00:00";
+        private readonly string dateSince = "2016-04-19 11:20:00";
+        //private readonly string dateSince = "1999-04-19 11:20:00";
         //private readonly string dateSince = "2015-04-17 00:00:00";
 
         private Dictionary<string, string> DecorateDictionary = new Dictionary<string, string>();
